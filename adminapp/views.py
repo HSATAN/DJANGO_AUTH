@@ -27,17 +27,16 @@ def index(request):
             print request.path
         name = request.POST.get('name', None)
         password = request.POST.get('password', None)
-        return redirect('/app/admin',args=[])
+        print dir(request)
+        print request.get_full_path()
+        next_path = request.get_full_path().split('next=')[-1]
+        return redirect(next_path,args=[])
 @login_required(redirect_field_name='next')
 def admin(request):
-    print request.session.session_key
-    print dir(request.session)
-
     return render(request,'adminapp/nav.html')
 
 @login_required
 def account(request):
-    request.session.set_expiry(5)
-    print dir(request.session.get_expiry_date)
-    print dir(request.session.get_expiry_age)
+    print dir(request.COOKIES)
+    request.session.set_expiry(5)  # 这只session过期时间
     return HttpResponse("这个页面只有登陆用户才能访问")
